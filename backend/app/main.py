@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Dict, List
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from .data_loader import (
@@ -15,6 +16,14 @@ app = FastAPI(
     title="MovieLens Recommendation API",
     description="API para obtener recomendaciones de películas basadas en similitudes de usuario usando MovieLens 100k.",
     version="0.1.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 ratings, items = load_data()
