@@ -5,7 +5,7 @@ from typing import Dict, List
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 
-from backend.app.data_loader import (
+from .data_loader import (
     get_shared_movie_ids,
     load_data,
     pearson_correlation,
