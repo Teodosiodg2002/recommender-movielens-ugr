@@ -48,8 +48,8 @@ def load_data(data_dir: str = None, udata: str = 'u.data', uitem: str = 'u.item'
     # Determinar ruta por defecto relativa al repo
     if data_dir is None:
         base = os.path.dirname(__file__)
-        # backend/app -> backend/data
-        data_dir = os.path.normpath(os.path.join(base, '..', '..', 'data'))
+        # Desde backend/app, subir un nivel a backend y acceder a backend/data
+        data_dir = os.path.normpath(os.path.join(base, '..', 'data'))
 
     ratings: Dict[int, Dict[int, float]] = {}
     items: Dict[int, Dict[str, str]] = {}
