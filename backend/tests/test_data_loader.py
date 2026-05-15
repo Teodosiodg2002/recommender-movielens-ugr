@@ -2,7 +2,7 @@ import tempfile
 import pathlib
 import pytest
 
-from backend.app.data_loader import load_data
+from backend.app.data_loader import get_shared_movie_ids, load_data
 
 
 def test_load_data_success():
@@ -32,6 +32,18 @@ def test_load_data_success():
         assert items[10]['title'] == 'Movie A'
         assert items[20]['title'] == 'Movie B'
 
+        shared = get_shared_movie_ids(1, 2, ratings)
+        assert shared == {10}
+
+
+def test_shared_movie_ids_returns_empty_when_no_overlap():
+    ratings = {
+        1: {10: 4.0, 20: 3.0},
+        2: {30: 5.0}
+    }
+    shared = get_shared_movie_ids(1, 2, ratings)
+    assert shared == set()
+
 
 def test_load_data_missing_udata_raises():
     with tempfile.TemporaryDirectory() as td:
@@ -40,4 +52,3 @@ def test_load_data_missing_udata_raises():
         (tdpath / 'u.item').write_text('10|Movie A', encoding='latin-1')
         with pytest.raises(FileNotFoundError):
             load_data(data_dir=str(tdpath))
-*** End Patch

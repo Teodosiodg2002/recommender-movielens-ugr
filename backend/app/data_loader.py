@@ -22,7 +22,7 @@ Notas sobre diseño:
 """
 from __future__ import annotations
 
-from typing import Dict, Tuple
+from typing import Dict, Set, Tuple
 import os
 
 
@@ -97,6 +97,29 @@ def load_data(data_dir: str = None, udata: str = 'u.data', uitem: str = 'u.item'
 
     # Retornar las estructuras
     return ratings, items
+
+
+def get_shared_movie_ids(user_id_1: int, user_id_2: int, ratings: Dict[int, Dict[int, float]]) -> Set[int]:
+    """Devuelve el conjunto de películas valoradas por ambos usuarios.
+
+    La función elige iterar sobre el usuario con menos valoraciones, lo que
+    reduce el coste en tiempo cuando los perfiles tienen tamaños muy distintos.
+    Esto es importante en datasets dispersos como MovieLens, donde cada usuario
+    valora solo una fracción de las películas disponibles.
+    """
+
+    if user_id_1 not in ratings or user_id_2 not in ratings:
+        return set()
+
+    ratings_1 = ratings[user_id_1]
+    ratings_2 = ratings[user_id_2]
+
+    if len(ratings_1) <= len(ratings_2):
+        smaller, larger = ratings_1, ratings_2
+    else:
+        smaller, larger = ratings_2, ratings_1
+
+    return {movie_id for movie_id in smaller if movie_id in larger}
 
 
 if __name__ == '__main__':
