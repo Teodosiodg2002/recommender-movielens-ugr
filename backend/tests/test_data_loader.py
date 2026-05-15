@@ -2,7 +2,7 @@ import tempfile
 import pathlib
 import pytest
 
-from backend.app.data_loader import get_shared_movie_ids, load_data
+from backend.app.data_loader import get_shared_movie_ids, load_data, pearson_correlation
 
 
 def test_load_data_success():
@@ -43,6 +43,33 @@ def test_shared_movie_ids_returns_empty_when_no_overlap():
     }
     shared = get_shared_movie_ids(1, 2, ratings)
     assert shared == set()
+
+
+def test_pearson_correlation_perfect_positive():
+    ratings = {
+        1: {10: 4.0, 20: 3.0, 30: 5.0},
+        2: {10: 5.0, 20: 4.0, 30: 6.0}
+    }
+    similarity = pearson_correlation(1, 2, ratings)
+    assert similarity == pytest.approx(1.0, abs=1e-9)
+
+
+def test_pearson_correlation_no_overlap_returns_zero():
+    ratings = {
+        1: {10: 4.0, 20: 3.0},
+        2: {30: 5.0, 40: 2.0}
+    }
+    similarity = pearson_correlation(1, 2, ratings)
+    assert similarity == 0.0
+
+
+def test_pearson_correlation_constant_ratings_returns_zero():
+    ratings = {
+        1: {10: 3.0, 20: 3.0},
+        2: {10: 4.0, 20: 4.0}
+    }
+    similarity = pearson_correlation(1, 2, ratings)
+    assert similarity == 0.0
 
 
 def test_load_data_missing_udata_raises():

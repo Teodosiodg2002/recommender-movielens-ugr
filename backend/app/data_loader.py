@@ -23,6 +23,7 @@ Notas sobre diseño:
 from __future__ import annotations
 
 from typing import Dict, Set, Tuple
+import math
 import os
 
 
@@ -120,6 +121,37 @@ def get_shared_movie_ids(user_id_1: int, user_id_2: int, ratings: Dict[int, Dict
         smaller, larger = ratings_2, ratings_1
 
     return {movie_id for movie_id in smaller if movie_id in larger}
+
+
+def pearson_correlation(user_id_1: int, user_id_2: int, ratings: Dict[int, Dict[int, float]]) -> float:
+    """Calcula la correlación de Pearson entre dos usuarios usando películas compartidas.
+
+    Retorna un valor entre -1 y 1. Si no hay suficientes películas compartidas o
+    si las puntuaciones son constantes, devuelve 0.0 para indicar que no se
+    puede establecer una similitud estadísticamente significativa.
+    """
+
+    shared_movie_ids = get_shared_movie_ids(user_id_1, user_id_2, ratings)
+    if len(shared_movie_ids) < 2:
+        return 0.0
+
+    ratings_1 = ratings[user_id_1]
+    ratings_2 = ratings[user_id_2]
+    values_1 = [ratings_1[movie_id] for movie_id in shared_movie_ids]
+    values_2 = [ratings_2[movie_id] for movie_id in shared_movie_ids]
+
+    mean_1 = sum(values_1) / len(values_1)
+    mean_2 = sum(values_2) / len(values_2)
+
+    numerator = sum((x - mean_1) * (y - mean_2) for x, y in zip(values_1, values_2))
+    sum_sq_1 = sum((x - mean_1) ** 2 for x in values_1)
+    sum_sq_2 = sum((y - mean_2) ** 2 for y in values_2)
+
+    denominator = math.sqrt(sum_sq_1 * sum_sq_2)
+    if denominator == 0.0:
+        return 0.0
+
+    return numerator / denominator
 
 
 if __name__ == '__main__':
