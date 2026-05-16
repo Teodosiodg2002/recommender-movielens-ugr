@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-main: #0B0F12;
+  --color-bg-surface: #12171C;
+  --color-border-retro: #242F38;
+  --color-text-main: #E2E8F0;
+  --color-text-muted: #56687A;
+  --color-glow-green: #4ADE80;
+  --color-glow-amber: #F59E0B;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --animate-cursor: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  color: var(--color-text-main);
+  background: var(--color-bg-main);
+  font-family: var(--font-mono);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-bg-main);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--color-glow-green);
+  color: #000;
+}
+
+button,
+input,
+select {
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+button {
+  border-radius: 0;
+}
+
+.terminal-input {
+  width: 100%;
+  border: 1px solid var(--color-border-retro);
+  background: var(--color-bg-main);
+  color: var(--color-text-main);
+}
+
+.terminal-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.terminal-cursor::after {
+  content: '█';
+  animation: var(--animate-cursor);
+}
