@@ -8,8 +8,6 @@ interface TopbarProps {
   onRefresh: () => void
 }
 
-const userIds = [101, 205, 305, 405, 512]
-
 export function Topbar({ userId, algorithm, onUserChange, onAlgorithmChange, onRefresh }: TopbarProps) {
   return (
     <header className="border-b border-slate-800 bg-slate-950/90 px-4 py-3 shadow-sm shadow-slate-950/10 backdrop-blur-sm">
@@ -21,18 +19,18 @@ export function Topbar({ userId, algorithm, onUserChange, onAlgorithmChange, onR
 
         <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 rounded-2xl border border-slate-800 bg-slate-900 px-3 py-2 text-slate-100">
-            Usuario
-            <select
+            Usuario ID
+            <input
+              type="number"
+              min="1"
+              max="9999"
               value={userId}
-              onChange={(event) => onUserChange(Number(event.target.value))}
-              className="bg-transparent text-slate-100 outline-none"
-            >
-              {userIds.map((id) => (
-                <option key={id} value={id} className="bg-slate-950 text-slate-100">
-                  {id}
-                </option>
-              ))}
-            </select>
+              onChange={(event) => {
+                const val = Number(event.target.value);
+                if (val > 0) onUserChange(val);
+              }}
+              className="w-16 bg-transparent text-slate-100 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center font-semibold"
+            />
           </label>
 
           <label className="flex items-center gap-2 rounded-2xl border border-slate-800 bg-slate-900 px-3 py-2 text-slate-100">

@@ -37,7 +37,7 @@ def test_recommendations_endpoint():
     response = client.get("/recommendations/1?limit=1")
     assert response.status_code == 200
     body = response.json()
-    assert body["user_id"] == 1
-    assert len(body["recommendations"]) == 1
-    assert body["recommendations"][0]["movie_id"] == 30
-    assert body["recommendations"][0]["title"] == "Movie C"
+    assert isinstance(body, list)
+    assert len(body) == 1
+    assert body[0]["movieId"] == "30"
+    assert body[0]["title"] == "Movie C"

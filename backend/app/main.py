@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 from .data_loader import (
     get_shared_movie_ids,
@@ -64,8 +64,7 @@ class RatingPayload(BaseModel):
     movie_id: int = Field(..., alias='movieId')
     rating: float
 
-    class Config:
-        allow_population_by_field_name = True
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class MetricsResponse(BaseModel):
@@ -101,8 +100,14 @@ def predict_rating(user_id: int, movie_id: int, algorithm: str) -> float:
 
 
 def compute_metrics(user_id: int, algorithm: str) -> MetricsResponse:
-    if user_id not in ratings:
-        raise HTTPException(status_code=404, detail=f"Usuario {user_id} no encontrado")
+    if user_id not in ratings or not ratings[user_id]:
+        return MetricsResponse(
+            activeUserId=user_id,
+            algorithm=algorithm,
+            rmse=0.0,
+            mae=0.0,
+            lastUpdatedAt=datetime.utcnow().isoformat() + 'Z',
+        )
 
     squared_errors: List[float] = []
     absolute_errors: List[float] = []
@@ -188,11 +193,8 @@ def predict_rating_from_neighbors(user_id: int, movie_id: int, neighbors: List[t
 
 
 def compute_recommendations(user_id: int, limit: int, min_rating: float, algorithm: str) -> List[RecommendationItem]:
-    if user_id not in ratings:
-        raise HTTPException(status_code=404, detail=f"Usuario {user_id} no encontrado")
-
-    if not ratings[user_id]:
-        raise HTTPException(status_code=400, detail="El usuario no tiene valoraciones.")
+    if user_id not in ratings or not ratings[user_id]:
+        return []
 
     neighbors = get_top_neighbors(user_id, algorithm)
     unseen = [movie_id for movie_id in items if movie_id not in ratings[user_id]]
@@ -240,9 +242,9 @@ def random_movies(
     count: int = Query(20, ge=1, le=50),
 ):
     if user_id not in ratings:
-        raise HTTPException(status_code=404, detail=f"Usuario {user_id} no encontrado")
-
-    unseen = [movie_id for movie_id in items if movie_id not in ratings[user_id]]
+        unseen = list(items.keys())
+    else:
+        unseen = [movie_id for movie_id in items if movie_id not in ratings[user_id]]
     selected = random.sample(unseen, min(count, len(unseen)))
 
     movies: List[RecommendationItem] = []
