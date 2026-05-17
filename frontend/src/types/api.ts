@@ -1,11 +1,14 @@
 export type SimilarityAlgorithm = 'pearson' | 'cosine'
 
-export interface MovieRecommendation {
-  movieId: string
+export interface Movie {
+  movieId: number
   title: string
   year: string
   genre: string
-  similarity: number
+}
+
+export interface MovieRecommendation extends Movie {
+  predictedRating: number
 }
 
 export interface UserMetrics {
@@ -18,10 +21,6 @@ export interface UserMetrics {
 
 export interface RatingPayload {
   userId: number
-  movieId: string
+  movieId: number
   rating: number
-}
-
-export interface OptimisticRating extends RatingPayload {
-  status: 'SENDING' | 'CONFIRMED' | 'FAILED'
 }

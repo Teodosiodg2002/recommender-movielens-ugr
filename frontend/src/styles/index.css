@@ -3,34 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --color-bg-main: #0B0F12;
-  --color-bg-surface: #12171C;
-  --color-border-retro: #242F38;
-  --color-text-main: #E2E8F0;
-  --color-text-muted: #56687A;
-  --color-glow-green: #4ADE80;
-  --color-glow-amber: #F59E0B;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --animate-cursor: blink 1s steps(2, start) infinite;
-}
-
-@keyframes blink {
-  to {
-    visibility: hidden;
-  }
+  color-scheme: dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
-  color: var(--color-text-main);
-  background: var(--color-bg-main);
-  font-family: var(--font-mono);
+  background: #020617;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--color-bg-main);
+  background: linear-gradient(180deg, #050b14 0%, #09111f 100%);
+  color: #e2e8f0;
 }
 
 #root {
@@ -42,33 +28,25 @@ body {
 }
 
 ::selection {
-  background: var(--color-glow-green);
-  color: #000;
+  background: rgba(56, 189, 248, 0.35);
+  color: #f8fafc;
 }
 
 button,
 input,
-select {
-  font-family: var(--font-mono);
-  outline: none;
+select,
+textarea {
+  font: inherit;
 }
 
 button {
-  border-radius: 0;
+  cursor: pointer;
 }
 
-.terminal-input {
-  width: 100%;
-  border: 1px solid var(--color-border-retro);
-  background: var(--color-bg-main);
-  color: var(--color-text-main);
-}
-
-.terminal-input::placeholder {
-  color: var(--color-text-muted);
-}
-
-.terminal-cursor::after {
-  content: '█';
-  animation: var(--animate-cursor);
+body,
+input,
+button,
+select,
+textarea {
+  color: inherit;
 }

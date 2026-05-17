@@ -6,7 +6,7 @@ El sistema se compone de tres capas principales:
 
 1. **Carga y preprocesado de datos**: lee los ficheros de MovieLens, construye la estructura de valoraciones y prepara los datos para el cálculo de similitudes.
 2. **Capa de lógica de recomendación**: calcula similitudes entre usuarios y genera recomendaciones a partir de los vectores de valoraciones compartidas.
-3. **Interfaz**: cliente React y API REST que exponen las recomendaciones y permiten la interacción con el sistema.
+3. **Interfaz**: cliente React y API REST que exponen las recomendaciones y permiten la interacción con el sistema. El frontend actual es un dashboard minimalista que carga 20 películas aleatorias para valoración y muestra recomendaciones con predicción de 4 o 5 estrellas.
 
 ## Componentes backend
 

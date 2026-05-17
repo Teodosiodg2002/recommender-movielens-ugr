@@ -26,6 +26,28 @@ from typing import Dict, Set, Tuple
 import math
 import os
 
+GENRE_LABELS = [
+    'Unknown',
+    'Action',
+    'Adventure',
+    'Animation',
+    "Children's",
+    'Comedy',
+    'Crime',
+    'Documentary',
+    'Drama',
+    'Fantasy',
+    'Film-Noir',
+    'Horror',
+    'Musical',
+    'Mystery',
+    'Romance',
+    'Sci-Fi',
+    'Thriller',
+    'War',
+    'Western',
+]
+
 
 def load_data(data_dir: str = None, udata: str = 'u.data', uitem: str = 'u.item') -> Tuple[Dict[int, Dict[int, float]], Dict[int, Dict[str, str]]]:
     """Carga `u.data` (valoraciones) y `u.item` (metadatos de películas).
@@ -94,7 +116,22 @@ def load_data(data_dir: str = None, udata: str = 'u.data', uitem: str = 'u.item'
                 except (ValueError, IndexError):
                     continue
                 title = parts[1] if len(parts) > 1 else ''
-                items[movie_id] = {'title': title, 'raw': line}
+                year = 'N/A'
+                if title.endswith(')') and '(' in title:
+                    candidate = title.rsplit('(', 1)[1]
+                    if candidate.endswith(')'):
+                        year = candidate[:-1]
+
+                genres = []
+                if len(parts) >= 24:
+                    flags = parts[5:24]
+                    genres = [GENRE_LABELS[i] for i, flag in enumerate(flags) if flag == '1']
+                items[movie_id] = {
+                    'title': title,
+                    'year': year,
+                    'genre': genres[0] if genres else 'Unknown',
+                    'raw': line,
+                }
 
     # Retornar las estructuras
     return ratings, items

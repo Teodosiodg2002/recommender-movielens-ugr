@@ -2,41 +2,73 @@
 
 ## Resumen del proyecto
 
-Este repositorio agrupa los artefactos necesarios para desarrollar un sistema de recomendación colaborativo de tipo usuario-usuario sobre el dataset MovieLens 100k. Está pensado como un trabajo de clase con enfoque didáctico y buenas prácticas de ingeniería: modularidad, trazabilidad de cambios y documentación clara.
+Aplicación de recomendación de películas basada en filtrado colaborativo usuario-usuario usando MovieLens 100k.
 
-## Arquitectura propuesta
+- Backend: FastAPI en Python.
+- Frontend: React + Vite con una UI limpia tipo dashboard.
+- Deploy: Docker Compose con frontend estático servido por Nginx y backend FastAPI.
 
-- Backend: FastAPI (Python). Exponerá endpoints para obtener recomendaciones, gestionar modelos y servir métricas.
-- Frontend: React (SPA). Interfaz para visualización de películas, envío de valoraciones y obtención de recomendaciones.
-- Datos: estructura de ficheros en `backend/data` con los datos de MovieLens y artefactos generados.
+## Qué hace
 
-Componentes clave:
-
-- `backend/app/core`: implementación de los algoritmos de recomendación y utilidades matemáticas.
-- `backend/app/data_loader.py`: funciones para carga y preprocesado de los ficheros MovieLens.
-- `frontend`: aplicación React responsable de la UX y consumo de la API.
+- Carga 20 películas aleatorias no vistas por el usuario activo.
+- Permite puntuar cada película de 1 a 5 estrellas.
+- Calcula el vecindario de los 10 usuarios más similares.
+- Predice valoraciones de películas no vistas y muestra recomendaciones con predicción de 4 o 5 estrellas.
+- Muestra métricas de calidad como RMSE y MAE.
 
 ## Estructura del repositorio
 
-- `backend/` — código servidor, modelos y utilidades.
-- `frontend/` — código cliente React.
-- `docs/` — documentación del diseño, API y despliegue.
+- `backend/`: servidor FastAPI, lógica de recomendación y datos.
+- `frontend/`: SPA React con dashboard minimalista.
+- `docs/`: documentación de arquitectura, API y despliegue.
+- `docker-compose.yml`: despliegue local simple para backend y frontend.
 
-## Documentación disponible
+## Cómo ejecutar
 
-- `docs/architecture.md` — diseño del sistema.
-- `docs/api.md` — descripción de los endpoints.
-- `docs/deployment.md` — guía de instalación y despliegue local.
+### Con Docker Compose
 
-## Hoja de ruta
+```bash
+docker compose up --build
+```
 
-1. Inicialización: estructura del repositorio, carga de datos y scripts auxiliares.
-1. Carga y preprocesado: implementar `load_data()` y generar una matriz de utilidades eficiente.
-1. Implementación del algoritmo: similitud (Pearson, Coseno) y generación de recomendaciones.
-1. API y frontend: exponer endpoints y construir interfaz mínima funcional.
-1. Evaluación y despliegue: tests, métricas de calidad, optimizaciones y empaquetado (Docker).
+Visita:
 
-## Contribuciones y buen uso de VCS
+- Frontend: `http://localhost:5173`
+- API: `http://localhost:8000`
+- Swagger: `http://localhost:8000/docs`
 
-- Realizar commits pequeños y descriptivos por cada cambio lógico (ej.: `feat(data): add load_data skeleton`).
-- Abrir ramas por característica y crear PRs para integración.
+### Sin Docker
+
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r backend/requirements.txt
+cd frontend
+npm ci
+cd ..
+cd backend
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+En otra terminal:
+
+```bash
+cd frontend
+npm run build
+npx serve dist
+```
+
+## Endpoints principales
+
+- `GET /movies/random?userId=...&count=20`
+- `POST /rate`
+- `GET /recommendations?userId=...&algorithm=pearson&minRating=4`
+- `GET /metrics?userId=...&algorithm=pearson`
+- `GET /users/{user_id}/ratings`
+- `GET /movies/{movie_id}`
+
+## Notas importantes
+
+- Coloca `u.data` y `u.item` en `backend/data/` antes de arrancar el backend.
+- El frontend usa `VITE_API_URL=http://backend:8000` en el despliegue Docker.
+- El backend utiliza un vecindario fijo de 10 usuarios para el cálculo colaborativo.
