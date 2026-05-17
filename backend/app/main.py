@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from .data_loader import (
     get_shared_movie_ids,
@@ -60,9 +60,12 @@ class MovieResponse(BaseModel):
 
 
 class RatingPayload(BaseModel):
-    user_id: int
-    movie_id: int
+    user_id: int = Field(..., alias='userId')
+    movie_id: int = Field(..., alias='movieId')
     rating: float
+
+    class Config:
+        allow_population_by_field_name = True
 
 
 class MetricsResponse(BaseModel):
@@ -104,8 +107,9 @@ def compute_metrics(user_id: int, algorithm: str) -> MetricsResponse:
     squared_errors: List[float] = []
     absolute_errors: List[float] = []
 
+    neighbors = get_top_neighbors(user_id, algorithm)
     for movie_id, actual_rating in ratings[user_id].items():
-        predicted = predict_rating(user_id, movie_id, algorithm)
+        predicted = predict_rating_from_neighbors(user_id, movie_id, neighbors)
         if predicted == 0:
             continue
 
@@ -171,7 +175,7 @@ def get_top_neighbors(user_id: int, algorithm: str, size: int = 10) -> List[tupl
     return scores[:size]
 
 
-def predict_rating(user_id: int, movie_id: int, neighbors: List[tuple[int, float]]) -> float:
+def predict_rating_from_neighbors(user_id: int, movie_id: int, neighbors: List[tuple[int, float]]) -> float:
     numerator = 0.0
     denominator = 0.0
     for neighbor_id, similarity in neighbors:
@@ -195,7 +199,7 @@ def compute_recommendations(user_id: int, limit: int, min_rating: float, algorit
 
     recommendations: List[RecommendationItem] = []
     for movie_id in unseen:
-        predicted = predict_rating(user_id, movie_id, neighbors)
+        predicted = predict_rating_from_neighbors(user_id, movie_id, neighbors)
         if predicted < min_rating:
             continue
 

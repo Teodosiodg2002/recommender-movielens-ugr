@@ -1,6 +1,6 @@
 import type { Movie, MovieRecommendation, RatingPayload, SimilarityAlgorithm, UserMetrics } from '../types/api'
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string) || 'http://localhost:8000'
+const BASE_URL = (import.meta.env.VITE_API_URL as string) || '/api'
 
 const jsonHeaders = {
   'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export async function fetchRecommendations(
   }
 
   const data = await response.json()
-  return data.map((movie: any) => parseMovie<MovieRecommendation>(movie))
+  return data.map((movie: any) => parseRecommendation(movie))
 }
 
 export async function fetchMetrics(userId: number, algorithm: SimilarityAlgorithm): Promise<UserMetrics> {

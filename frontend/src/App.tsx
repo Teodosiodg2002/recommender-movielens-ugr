@@ -111,11 +111,15 @@ export default function App() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
                   <div className="text-xs uppercase tracking-[0.2em] text-slate-500">RMSE</div>
-                  <div className="mt-2 text-2xl font-semibold text-slate-100">{metrics?.rmse.toFixed(2) ?? '--'}</div>
+                  <div className="mt-2 text-2xl font-semibold text-slate-100">
+                    {metrics ? metrics.rmse.toFixed(2) : '--'}
+                  </div>
                 </div>
                 <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4">
                   <div className="text-xs uppercase tracking-[0.2em] text-slate-500">MAE</div>
-                  <div className="mt-2 text-2xl font-semibold text-slate-100">{metrics?.mae.toFixed(2) ?? '--'}</div>
+                  <div className="mt-2 text-2xl font-semibold text-slate-100">
+                    {metrics ? metrics.mae.toFixed(2) : '--'}
+                  </div>
                 </div>
                 <div className="rounded-2xl border border-slate-800 bg-slate-950 p-4 sm:col-span-2">
                   <div className="text-xs uppercase tracking-[0.2em] text-slate-500">Última actualización</div>
