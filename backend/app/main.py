@@ -75,29 +75,6 @@ class MetricsResponse(BaseModel):
     lastUpdatedAt: str
 
 
-def predict_rating(user_id: int, movie_id: int, algorithm: str) -> float:
-    if user_id not in ratings:
-        raise HTTPException(status_code=404, detail=f"Usuario {user_id} no encontrado")
-
-    weighted_sum = 0.0
-    similarity_sum = 0.0
-
-    for other_user_id, other_ratings in ratings.items():
-        if other_user_id == user_id or movie_id not in other_ratings:
-            continue
-
-        similarity = compute_similarity(user_id, other_user_id, algorithm)
-        if similarity <= 0:
-            continue
-
-        weighted_sum += similarity * other_ratings[movie_id]
-        similarity_sum += abs(similarity)
-
-    if similarity_sum == 0:
-        return 0.0
-
-    return weighted_sum / similarity_sum
-
 
 def compute_metrics(user_id: int, algorithm: str) -> MetricsResponse:
     if user_id not in ratings or not ratings[user_id]:

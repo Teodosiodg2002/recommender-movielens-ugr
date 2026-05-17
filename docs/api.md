@@ -1,4 +1,4 @@
-﻿# Documentación de la API
+# Documentación de la API
 
 ## Propósito
 
@@ -8,7 +8,7 @@ Esta API REST permite al frontend cargar películas de evaluación, enviar valor
 
 ### `GET /movies/random`
 
-Devuelve una selección aleatoria de películas no vistas por el usuario activo.
+Devuelve una selección aleatoria de películas no vistas por el usuario activo (si el usuario es nuevo y no tiene valoraciones, devuelve títulos aleatorios del catálogo general).
 
 #### Parámetros
 - `userId` (query): identificador del usuario.
@@ -32,7 +32,7 @@ Registra una valoración del usuario sobre una película.
 
 ### `GET /recommendations`
 
-Genera recomendaciones basadas en filtrado colaborativo usuario-usuario.
+Genera recomendaciones basadas en filtrado colaborativo usuario-usuario (si el usuario es nuevo y no tiene valoraciones, devuelve una lista vacía de forma elegante).
 
 #### Parámetros
 - `userId` (query): identificador del usuario.
@@ -46,7 +46,7 @@ Genera recomendaciones basadas en filtrado colaborativo usuario-usuario.
 
 ### `GET /metrics`
 
-Devuelve métricas de predicción del usuario activo.
+Devuelve métricas de predicción (RMSE y MAE) del usuario activo (si el usuario es nuevo y no tiene valoraciones, devuelve valores en cero de forma elegante).
 
 #### Parámetros
 - `userId` (query): identificador del usuario.
